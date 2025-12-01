@@ -1,0 +1,15 @@
+How to create a Windows EXE using PyInstaller (instructions included).
+
+1. Install PyInstaller in your environment:
+   pip install pyinstaller
+
+2. From the project root, run:
+   pyinstaller --onefile --add-data "templates;templates" --add-data "static;static" app.py
+
+   On Linux/Mac use ':' as separator, on Windows use ';' as above.
+
+3. After building, the executable will be in the 'dist' folder. Copy models.pkl and scaler.pkl into the same folder
+   (or modify the code to load from an embedded resource).
+
+Note: Building an EXE requires a Windows environment (or Wine) to build reliably for Windows. This repository includes
+this instruction and a helper batch file 'build_exe_windows.bat' which you can run on Windows.

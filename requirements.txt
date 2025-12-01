@@ -1,0 +1,10 @@
+Flask
+Flask-Login
+Werkzeug
+numpy
+pillow
+scikit-image
+scikit-learn
+opencv-python
+joblib
+tqdm
