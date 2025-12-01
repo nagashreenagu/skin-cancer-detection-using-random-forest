@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Register</title>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Poppins", sans-serif; }
+
+    body {
+        background: url("/mnt/data/cebbc929-4526-45b6-82f8-f75526fa3b3e.png") no-repeat center center/cover;
+        min-height: 100vh;
+    }
+
+    .navbar {
+        width: 100%;
+        padding: 14px 22px;
+        background: rgba(255,255,255,0.38);
+        backdrop-filter: blur(8px);
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        border-bottom: 1px solid rgba(255,255,255,0.45);
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 10;
+    }
+
+    .navbar h2 { color:#000; font-size:22px; font-weight:600; }
+
+    .page-center {
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        min-height:100vh;
+        padding-top:80px;
+    }
+
+    .register-box {
+        width: 450px;
+        background: rgba(255,255,255,0.85);
+        padding: 36px;
+        border-radius: 20px;
+        box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+    }
+
+    .register-box h1 {
+        text-align:center;
+        font-size: 34px;
+        font-weight:700;
+        color:#111;
+        margin-bottom:8px;
+    }
+
+    label { display:block; margin:12px 0 6px; font-weight:600; }
+    input {
+        width:100%; padding:10px 12px;
+        border:none; border-bottom:2px solid #aaa;
+        background:transparent; outline:none;
+    }
+    .error-msg { color:red; font-size:13px; display:none; margin-top:6px; }
+
+    .register-btn {
+        width:100%; padding:12px;
+        background:#ff6b3d; color:#fff;
+        border:none; border-radius:25px;
+        font-weight:700;
+        margin-top:20px;
+        cursor:pointer;
+    }
+
+    .success-popup {
+        display:none;
+        background:#4CAF50;
+        color:white;
+        padding:12px;
+        border-radius:8px;
+        text-align:center;
+        margin-bottom:12px;
+    }
+</style>
+</head>
+<body>
+
+<div class="navbar">
+    <h2>Register New Account</h2>
+</div>
+
+<div class="page-center">
+    <div class="register-box">
+
+        <h1>Create Account</h1>
+
+        <div id="successBox" class="success-popup">Registered Successfully!</div>
+
+        <form id="registerForm" novalidate>
+            <label>Username</label>
+            <input id="username" type="text" placeholder="Enter username">
+            <div id="usernameError" class="error-msg">Please enter a username</div>
+
+            <label>Email</label>
+            <input id="email" type="email" placeholder="Enter email">
+            <div id="emailError" class="error-msg">Please enter a valid email</div>
+
+            <label>Password</label>
+            <input id="password" type="password" placeholder="Enter password">
+            <div id="passwordError" class="error-msg">Password must be at least 6 characters</div>
+
+            <label>Confirm Password</label>
+            <input id="password2" type="password" placeholder="Confirm password">
+            <div id="password2Error" class="error-msg">Passwords do not match</div>
+
+            <button type="button" class="register-btn" id="btnRegister">Register</button>
+        </form>
+
+    </div>
+</div>
+
+<script>
+document.getElementById("btnRegister").addEventListener("click", function() {
+
+    let valid = true;
+
+    const username = document.getElementById("username");
+    const email = document.getElementById("email");
+    const password = document.getElementById("password");
+    const password2 = document.getElementById("password2");
+
+    const uErr = document.getElementById("usernameError");
+    const eErr = document.getElementById("emailError");
+    const pErr = document.getElementById("passwordError");
+    const p2Err = document.getElementById("password2Error");
+    const successBox = document.getElementById("successBox");
+
+    [uErr,eErr,pErr,p2Err].forEach(el => el.style.display = "none");
+
+    if (!username.value.trim()) { uErr.style.display = "block"; valid = false; }
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email.value.trim() || !emailPattern.test(email.value)) {
+        eErr.style.display = "block"; valid = false;
+    }
+
+    if (!password.value || password.value.length < 6) {
+        pErr.style.display = "block"; valid = false;
+    }
+
+    if (!password2.value) {
+        p2Err.textContent = "Please confirm password";
+        p2Err.style.display = "block";
+        valid = false;
+    } else if (password.value !== password2.value) {
+        p2Err.textContent = "Passwords do not match";
+        p2Err.style.display = "block";
+        valid = false;
+    }
+
+    if (valid) {
+        successBox.style.display = "block";
+
+        setTimeout(() => {
+            window.location.href = "login.html";
+        }, 200);
+    }
+});
+</script>
+
+</body>
+</html>

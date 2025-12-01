@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}Result - Skin Cancer AI{% endblock %}
+
+{% block content %}
+
+<style>
+  :root{
+    --card-bg:#ffffff;
+    --accent-green:#2ea44f;
+    --accent-red:#d9534f;
+    --muted:rgba(0,0,0,0.6);
+    --shadow:0 18px 40px rgba(0,0,0,0.12);
+    --rounded:16px;
+  }
+
+  .result-shell{
+    min-height:80vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:40px 20px;
+    background:#f3f4f6;
+  }
+
+  .result-card{
+    background:var(--card-bg);
+    padding:30px;
+    max-width:480px;
+    width:100%;
+    border-radius:var(--rounded);
+    text-align:center;
+    box-shadow:var(--shadow);
+  }
+
+  .result-image{
+    width:100%;
+    max-width:330px;
+    border-radius:12px;
+    margin-top:10px;
+    box-shadow:0 10px 20px rgba(0,0,0,0.15);
+  }
+
+  .label{
+    margin-top:14px;
+    font-size:22px;
+    font-weight:800;
+    text-transform:capitalize;
+  }
+
+  .label-benign{ color:var(--accent-green); }
+  .label-malign{ color:var(--accent-red); }
+
+  .confidence{
+    margin-top:8px;
+    font-size:16px;
+    font-weight:700;
+    color:var(--muted);
+  }
+
+  .back-btn{
+    display:inline-block;
+    margin-top:20px;
+    padding:12px 18px;
+    background:#ff6b3d;
+    color:white;
+    font-weight:700;
+    border-radius:14px;
+    text-decoration:none;
+    box-shadow:0 6px 15px rgba(255,107,61,0.28);
+  }
+  .back-btn:hover{ background:#ff5722; }
+</style>
+
+<div class="result-shell">
+  <div class="result-card">
+
+    <h2 style="margin:0; font-weight:800;">Prediction Result</h2>
+
+    <!-- Image -->
+    {% if image_url %}
+      <img src="{{ image_url }}" class="result-image" alt="Uploaded Image">
+    {% endif %}
+
+    <!-- Disease Name -->
+    {% set lbl = (label or '').lower() %}
+    {% if 'malign' in lbl %}
+      <div class="label label-malign">Malignant</div>
+    {% else %}
+      <div class="label label-benign">Benign</div>
+    {% endif %}
+
+    <!-- Confidence -->
+    <div class="confidence">Confidence: {{ confidence }}%</div>
+
+    <!-- Back Button -->
+    <a href="{{ url_for('upload') }}" class="back-btn">Back to Upload</a>
+
+  </div>
+</div>
+<!-- FOOTER -->
+<div class="footer">
+    Developed by <strong>Group 9</strong> — Nagashree, Swathi, Bhavitha, Pragathi
+</div>
+
+{% endblock %}

@@ -1,0 +1,286 @@
+{# templates/contact.html #}
+{% extends 'base.html' %}
+{% block title %}Contact Us{% endblock %}
+
+{% block content %}
+
+<style>
+  :root{
+    --page-bg: #f6f7f9;
+    --card:#fff;
+    --muted:#6b7280;
+    --accent:#ff6b3d;
+    --accent-2:#ff6b3d;
+    --shadow: 0 10px 30px rgba(16,24,40,0.06);
+    --radius:18px;
+    --glass: rgba(255,255,255,0.96);
+    font-family: "Poppins", Inter, system-ui, Arial, sans-serif;
+  }
+  *{box-sizing:border-box}
+  body { background: var(--page-bg); margin:0; padding:0; }
+
+  .page-wrap{
+    min-height:80vh;
+    padding:28px 16px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:18px;
+  }
+
+  /* The centered card that contains the header/title and intro */
+  .contact-container{
+    width:100%;
+    max-width:720px;
+    background:var(--card);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:18px;
+    overflow:visible;
+  }
+
+  /* Header inside the card (this replaces your old "second navbar") */
+  .contact-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:14px 12px;
+    border-radius:14px;
+    background: linear-gradient(180deg, rgba(255,255,255,1), rgba(250,250,250,1));
+    box-shadow: 0 6px 18px rgba(0,0,0,0.04);
+    margin-bottom:8px;
+  }
+  .contact-header h2{
+    margin:0;
+    font-size:20px;
+    font-weight:700;
+    color:#1f2937;
+  }
+  .contact-header .sub {
+    color:var(--muted);
+    font-size:13px;
+    margin-top:2px;
+  }
+
+  .logout-btn {
+    background: var(--accent);
+    color: white;
+    padding:8px 14px;
+    border-radius:10px;
+    font-weight:600;
+    text-decoration:none;
+    font-size:14px;
+    box-shadow:0 6px 18px rgba(255,107,61,0.18);
+  }
+
+  /* Intro area below header */
+  .intro{
+    padding:12px;
+  }
+  .intro p.title{ font-size:18px; font-weight:700; margin:6px 0; color:#111827; }
+  .intro p.desc{ color:var(--muted); margin:6px 0 0 0; }
+
+  /* Modal styles */
+  .modal{ position:fixed; inset:0; background:rgba(0,0,0,0.18); display:none; align-items:center; justify-content:center; z-index:1000; padding:18px; }
+  .modal.show{ display:flex; }
+  .contact-card{
+    width:640px;
+    max-width:calc(100% - 40px);
+    background:var(--card);
+    padding:24px;
+    border-radius:16px;
+    box-shadow:var(--shadow);
+    position:relative;
+    animation:fadeIn .26s ease;
+  }
+  @keyframes fadeIn { from {opacity:0; transform:translateY(-8px);} to {opacity:1; transform:translateY(0);} }
+
+  h2.modal-title{ margin:0 0 6px 0; font-size:22px; font-weight:800; color:#111827; }
+  p.lead{ margin:0 0 14px 0; color:var(--muted); }
+
+  .grid{ display:flex; gap:12px; }
+  .col{ flex:1; min-width:0; } /* prevent overflow */
+  label{ display:block; margin-bottom:8px; font-weight:600; color:#111827; font-size:14px; }
+  input, textarea{
+    width:100%;
+    padding:12px 14px;
+    border-radius:12px;
+    border:1px solid rgba(0,0,0,0.08);
+    background:#fbfbfb;
+    margin-bottom:14px;
+    font-size:14px;
+    color:#111827;
+  }
+  textarea{ min-height:120px; resize:vertical; }
+
+  .actions{ text-align:right; }
+  .btn{ background:var(--accent); color:white; padding:12px 20px; border:none; border-radius:12px; font-weight:800; cursor:pointer; box-shadow:0 10px 30px rgba(255,107,61,0.18); }
+  .btn:active{ transform: translateY(1px); }
+
+  .close-btn{ position:absolute; top:12px; right:12px; font-size:18px; border:none; background:none; cursor:pointer; color:#9ca3af; }
+
+  .flash-list{ max-width:720px; margin:0 auto 12px auto; display:flex; flex-direction:column; gap:8px; }
+  .flash{ background:#fff; padding:10px 14px; border-radius:10px; box-shadow:var(--shadow); color:#111827; }
+
+  .toast{
+    position:fixed;
+    left:50%;
+    transform:translateX(-50%);
+    bottom:28px;
+    background:#1a7f3a;
+    color:white;
+    padding:12px 18px;
+    border-radius:10px;
+    font-weight:700;
+    display:none;
+    box-shadow:0 10px 30px rgba(0,0,0,0.12);
+    z-index:1200;
+  }
+
+  @media(max-width:720px){
+    .grid{ flex-direction:column; }
+    .contact-card{ padding:18px; }
+    .contact-header{ padding:12px; }
+    .contact-container{ padding:12px; }
+  }
+</style>
+
+<div class="page-wrap">
+  <!-- Centered card that contains header and intro (no duplicate navbar) -->
+  <div class="contact-container" role="region" aria-labelledby="contact-card-title">
+    <div class="contact-header" id="contact-card-title">
+      <div>
+        <h2>Contact Form</h2>
+        <div class="sub">Questions, feedback or issues — send us a message.</div>
+      </div>
+
+      {# show logout only if user is authenticated - safe fallback #}
+      {% if current_user.is_authenticated %}
+        <div>
+          <a class="logout-btn" href="{{ url_for('logout') }}">Logout</a>
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="intro" aria-hidden="false">
+      <p class="title">Welcome</p>
+      <p class="desc">The contact modal will appear automatically in the center. Fill the required fields and submit; we’ll get back to you soon.</p>
+    </div>
+  </div>
+
+  <!-- Flash messages area -->
+  <div class="flash-list" aria-live="polite" aria-atomic="true">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, msg in messages %}
+          <div class="flash">{{ msg }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+  </div>
+</div>
+
+<!-- Contact modal (opens automatically) -->
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="contactTitle">
+  <div class="contact-card" role="document">
+    <button class="close-btn" id="closeBtn" aria-label="Close">✕</button>
+
+    <h2 class="modal-title" id="contactTitle">Contact Us</h2>
+    <p class="lead">Have a question? Send a message and we’ll reply shortly.</p>
+
+    <form id="contactForm" method="post" action="{{ url_for('contact') }}" novalidate>
+      <div class="grid" role="group" aria-label="Your details">
+        <div class="col">
+          <label for="name">Name *</label>
+          <input id="name" name="name" type="text" required placeholder="Your name" />
+        </div>
+        <div class="col">
+          <label for="email">Email *</label>
+          <input id="email" name="email" type="email" required placeholder="you@example.com" />
+        </div>
+      </div>
+
+      <label for="subject">Subject</label>
+      <input id="subject" name="subject" type="text" placeholder="Optional subject" />
+
+      <label for="message">Message *</label>
+      <textarea id="message" name="message" required placeholder="Write your message..."></textarea>
+
+      <div class="actions">
+        <button class="btn" type="submit">Submit</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite">Message sent successfully — Thank you!</div>
+
+<script>
+(function(){
+  const modal = document.getElementById('modal');
+  const closeBtn = document.getElementById('closeBtn');
+  const form = document.getElementById('contactForm');
+  const toast = document.getElementById('toast');
+
+  // Auto-open modal shortly after DOM loads
+  window.addEventListener('DOMContentLoaded', () => {
+    // small delay so it feels natural and avoids flash-of-unstyled
+    setTimeout(()=> {
+      modal.classList.add('show');
+      modal.style.display = 'flex';
+      const first = document.getElementById('name');
+      if (first) first.focus();
+    }, 120);
+  });
+
+  // Close handlers
+  closeBtn.addEventListener('click', () => {
+    modal.classList.remove('show');
+    modal.style.display = 'none';
+  });
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.classList.remove('show');
+      modal.style.display = 'none';
+    }
+  });
+
+  // Basic form client-side validation
+  form.addEventListener('submit', function(e){
+    if (!form.checkValidity()) {
+      e.preventDefault();
+      const invalid = form.querySelector(':invalid');
+      if (invalid) {
+        invalid.focus();
+        invalid.reportValidity();
+      }
+    }
+    // otherwise let the form post to server (Flask route handles saving + flashes)
+  });
+
+  // Show toast if server flashed success messages containing common success phrases
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, m in messages %}
+        (function(){
+          const msg = {{ m|tojson }};
+          // look for success-like messages to show as toast
+          if (/received|sent|success|thank/i.test(msg)) {
+            toast.textContent = msg;
+            toast.style.display = 'block';
+            toast.style.opacity = '1';
+            setTimeout(()=> {
+              toast.style.transition = 'opacity 300ms ease';
+              toast.style.opacity = '0';
+              setTimeout(()=> { toast.style.display = 'none'; }, 300);
+            }, 3000);
+          }
+        })();
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+})();
+</script>
+
+{% endblock %}

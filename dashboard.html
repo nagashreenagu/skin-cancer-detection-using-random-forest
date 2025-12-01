@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard - Skin Cancer AI{% endblock %}
+
+{% block content %}
+
+<style>
+  :root{
+    --box-color: #d4f1f9;           /* pastel box */
+    --box-border: #9fdceb;  
+    --btn-pink: #ffccd9;            /* button default = light pink */
+    --btn-green: #c8f7d4;           /* clicked = light green */
+    --text-color: #000000;
+  }
+
+  body {
+    background: #e6e6e6;
+    font-family: Inter, Arial, sans-serif;
+    color: var(--text-color);
+  }
+
+  .container {
+    max-width: 980px;
+    margin: 50px auto;
+    padding: 24px;
+  }
+
+  .animated-box {
+    background: var(--box-color);
+    border: 2px solid var(--box-border);
+    border-radius: 14px;
+    padding: 28px;
+    text-align: center;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.18);
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+    100% { transform: translateY(0); }
+  }
+
+  h1.title {
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 6px;
+  }
+
+  p.muted {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+
+  .button-box {
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+  }
+
+  .btn {
+    padding: 12px 22px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    min-width: 150px;
+    font-weight: 800;
+    font-size: 16px;
+    transition: 0.3s ease;
+    background: var(--btn-pink);     /* default = light pink */
+    color: #000;
+  }
+
+  .btn.active {
+    background: var(--btn-green) !important; /* clicked = light green */
+  }
+</style>
+
+<div class="container">
+
+  <div class="animated-box">
+
+      <h1 class="title">Dashboard</h1>
+      <p class="muted">Welcome, {{ user.username }}.</p>
+
+      <div class="button-box">
+        <button id="uploadBtn" class="btn">↑ Upload Image</button>
+        <button id="logoutBtn" class="btn">Logout</button>
+      </div>
+
+  </div>
+
+</div>
+<!-- FOOTER -->
+<div class="footer">
+    Developed by <strong>Group 9</strong> — Nagashree, Swathi, Bhavitha, Pragathi
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+
+    const uploadBtn = document.getElementById("uploadBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    uploadBtn.addEventListener("click", function () {
+      uploadBtn.classList.add("active");
+      window.location = "{{ url_for('upload') }}";     // redirect to upload.html
+    });
+
+    logoutBtn.addEventListener("click", function () {
+      logoutBtn.classList.add("active");
+      window.location = "{{ url_for('home') }}";       // redirect to home page
+    });
+
+  });
+</script>
+
+{% endblock %}

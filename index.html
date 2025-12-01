@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block title %}Home - Skin Cancer AI{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        margin: 0;
+        font-family: "Poppins", sans-serif;
+        background: #f4fdfd;
+        overflow-x: hidden;
+    }
+
+    .hero-card {
+        max-width: 900px;
+        margin: 60px auto;
+        background: #fff;
+        padding: 50px;
+        border-radius: 25px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+        text-align: center;
+    }
+
+    .btn-primary {
+        background: #ff6b3d;
+        color: #fff;
+        padding: 10px 28px;
+        border-radius: 12px;
+        border: none;
+        font-size: 17px;
+        cursor: pointer;
+        margin: 10px;
+    }
+
+    .btn-primary:hover {
+        opacity: 0.85;
+    }
+
+    .credit {
+        margin-top: 35px;
+        font-size: 15px;
+        color: #444;
+    }
+</style>
+
+<div class="hero-card">
+    <h1>Welcome to the Skin Cancer Detection Tool</h1>
+
+    <p style="margin-top:15px; font-size:18px; color:#555;">
+        AI-powered platform for early skin cancer diagnosis.
+    </p>
+
+    <p style="font-size:20px; font-weight:600; color:#5b52ff;">
+        Powered by Machine Learning & Random Forest
+    </p>
+
+    <p style="font-size:17px; color:#444;">
+        Upload an image to detect <span style="color:#ff4b4b; font-weight:600;">Benign</span> or 
+        <span style="color:#5b52ff; font-weight:600;">Malignant</span> lesions.
+    </p>
+
+    <p style="font-size:17px; color:#666;">
+        Get started by logging in or creating an account.
+    </p>
+
+    <div>
+        <a href="{{ url_for('login') }}"><button class="btn-primary">Login</button></a>
+        <a href="{{ url_for('register') }}"><button class="btn-primary">Register</button></a>
+    </div>
+
+    <!-- ⭐ Developer Credit moved to LAST -->
+    <p class="credit">
+        Developed by <strong>Group 9</strong> —  Nagashree,Swathi, Bhavitha, Pragathi
+    </p>
+</div>
+
+{% endblock %}

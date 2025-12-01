@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>{% block title %}Skin Cancer AI{% endblock %}</title>
+
+  <!-- GLOBAL CSS MERGED FROM REGISTER PAGE + ORIGINAL THEME -->
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+    :root{
+      --bg: #f5f5f5;
+      --text: #2d2d2d;
+      --muted:#6b6b6b;
+
+      /* ORANGE THEME */
+      --accent:#ff6b3d;
+      --accent-2:#ff6b3d;
+      --accent-3:#ff5722;
+
+      --white:#ffffff;
+      --glass: rgba(255,255,255,0.38);
+    }
+
+    * { box-sizing: border-box; }
+    body{
+      margin:0;
+      padding:0;
+      font-family:"Poppins",sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    /* GLOBAL NAVBAR */
+    .navbar{
+      width:100%;
+      padding:12px 28px;
+      background:var(--glass);
+      backdrop-filter: blur(8px);
+      position: sticky;
+      top:0;
+      z-index:1000;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+      border-bottom: 1px solid rgba(255,255,255,0.5);
+    }
+
+    .logo-title{
+      font-size:20px;
+      font-weight:700;
+      color:var(--accent-2);
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    /* little icon circle next to logo (pure CSS) */
+    .logo-dot{
+      width:10px; height:10px;
+      background: linear-gradient(135deg, #fff 0%, var(--accent-2) 100%);
+      border-radius:50%;
+      box-shadow: 0 6px 18px rgba(255,107,61,0.25);
+    }
+
+    .nav-right{
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
+
+    /* NAV BUTTONS (HOME / ABOUT / CONTACT) */
+    .nav-button {
+      -webkit-appearance:none;
+      appearance:none;
+      border: none;
+      background: rgba(255,255,255,0.9);
+      color: var(--accent-2);
+      font-weight:600;
+      padding:8px 14px;
+      border-radius:999px; /* pill */
+      cursor:pointer;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      box-shadow: 0 8px 18px rgba(36,36,36,0.04);
+      transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease, color 180ms ease;
+      outline: none;
+      font-size:14px;
+      letter-spacing:0.2px;
+    }
+    .nav-button:hover, .nav-button:focus{
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 18px 36px rgba(36,36,36,0.09);
+      background:linear-gradient(180deg, #fff, #fff);
+      color: var(--accent-3);
+    }
+
+    /* small accent dot for nav items (optional) */
+    .nav-badge {
+      width:6px; height:6px;
+      border-radius:50%;
+      background:var(--accent-2);
+      display:inline-block;
+      box-shadow: 0 6px 12px rgba(255,107,61,0.18);
+    }
+
+    /* PRIMARY ORANGE BUTTON (Login / Dashboard) - pill style */
+    .btn {
+      padding:10px 18px;
+      border-radius:12px;
+      border:none;
+      background:var(--accent-2);
+      color:var(--white);
+      font-weight:600;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      cursor:pointer;
+      transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+      box-shadow: 0 8px 22px rgba(255,107,61,0.18);
+      font-size:14px;
+    }
+    .btn:hover, .btn:focus{
+      transform: translateY(-3px);
+      box-shadow: 0 22px 38px rgba(255,107,61,0.22);
+      background: var(--accent-3);
+    }
+
+    /* REGISTER special (rounded rectangle shape) */
+    .btn.register {
+      border-radius:18px;
+      padding:10px 20px;
+      background: linear-gradient(90deg, var(--accent-2), var(--accent-3));
+      box-shadow: 0 10px 30px rgba(255,94,54,0.20);
+      font-weight:700;
+      font-size:14px;
+    }
+    .btn.register:hover, .btn.register:focus{
+      transform: translateY(-3px) scale(1.02);
+    }
+
+    /* small subtle animation box around navbar items on hover (glow) */
+    .nav-item-wrap {
+      position:relative;
+      display:inline-block;
+    }
+    .nav-item-wrap::after{
+      content: "";
+      position:absolute;
+      left:50%; top:50%;
+      width:0; height:0;
+      transform: translate(-50%,-50%);
+      background: radial-gradient(circle at center, rgba(255,107,61,0.08), transparent 40%);
+      border-radius: 50%;
+      transition: width .28s ease, height .28s ease, opacity .28s ease;
+      opacity:0;
+      pointer-events:none;
+    }
+    .nav-button:hover + .nav-item-wrap::after,
+    .nav-button:focus + .nav-item-wrap::after,
+    .nav-button:hover ~ .nav-item-wrap::after {
+      width:220px; height:60px; opacity:1;
+    }
+
+    /* COMMON CONTAINER CARD */
+    .container{
+      max-width:920px;
+      margin:50px auto;
+      background:var(--white);
+      padding:36px;
+      border-radius:12px;
+      box-shadow:0 20px 50px rgba(0,0,0,0.06);
+      text-align:center;
+    }
+
+    /* FLASH MESSAGES */
+    .flash-box{
+      max-width:900px;
+      margin:18px auto;
+      text-align:center;
+    }
+    .flash-message{
+      background:#fff7e6;
+      padding:10px;
+      border-radius:8px;
+      margin:6px 0;
+      border:1px solid #ffe2a8;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width:720px){
+      .navbar { padding:10px 14px; }
+      .nav-right { gap:8px; }
+      .logo-title{ font-size:18px; }
+      .nav-button { padding:8px 10px; font-size:13px; }
+      .btn { padding:8px 12px; font-size:13px; }
+    }
+  </style>
+</head>
+
+<body>
+
+{% block navbar %}
+<!-- NAVBAR -->
+<div class="navbar" role="navigation" aria-label="Main navigation">
+  <div class="logo-title" onclick="location.href='{{ url_for('home') }}'">
+    <span class="logo-dot" aria-hidden="true"></span>
+    Skin Cancer AI
+  </div>
+
+  <div class="nav-right" role="menu" aria-label="Primary">
+    <!-- nav links as pill-buttons -->
+    <a class="nav-button" role="menuitem" href="{{ url_for('home') }}">Home</a>
+    <a class="nav-button" role="menuitem" href="{{ url_for('about') }}">About</a>
+    <a class="nav-button" role="menuitem" href="{{ url_for('contact') }}">Contact</a>
+
+    {% if current_user.is_authenticated %}
+      <a class="btn" href="{{ url_for('dashboard') }}">Dashboard</a>
+      <a class="btn register" href="{{ url_for('logout') }}">Logout</a>
+    
+    {% endif %}
+  </div>
+</div>
+<!-- FOOTER -->
+<div class="footer">
+    Developed by <strong>Group 9</strong> — Nagashree, Swathi, Bhavitha, Pragathi
+</div>
+{% endblock %}
+
+<!-- FLASH MESSAGES -->
+<div class="flash-box">
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      {% for msg in messages %}
+        <div class="flash-message">{{ msg }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+</div>
+
+<!-- PAGE CONTENT -->
+{% block content %}{% endblock %}
+
+</body>
+</html>
+
+
+                  

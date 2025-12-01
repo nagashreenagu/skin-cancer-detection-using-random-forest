@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+{% block title %}Upload - Skin Cancer AI{% endblock %}
+
+{% block content %}
+<style>
+  :root{
+    --page-bg: #f3f4f6;
+    --card-bg: #ffffff;
+    --accent-orange: #ff6b3d;
+    --accent-orange-dark: #ff5722;
+    --muted: rgba(0,0,0,0.6);
+    --rounded: 18px;
+  }
+
+  .page-shell {
+    min-height: 100vh;
+    background: url('{{ bg_image_url }}') center/cover no-repeat;
+    padding: 56px 20px;
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+  }
+
+  .upload-card{
+    width: 100%;
+    max-width: 820px;
+    background: var(--card-bg);
+    padding: 28px;
+    border-radius: var(--rounded);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.12);
+    border: 1px solid rgba(0,0,0,0.06);
+  }
+
+  .upload-title { text-align:center; font-size:28px; font-weight:800; color:#111; margin:0; }
+  .upload-sub { text-align:center; margin-top:6px; color:var(--muted); font-weight:600; }
+
+  .dropzone {
+    border: 2px dashed rgba(0,0,0,0.12);
+    border-radius: 14px;
+    padding: 28px;
+    margin-top: 22px;
+    background: rgba(255,255,255,0.5);
+    cursor: pointer;
+    transition: 200ms;
+  }
+  .dropzone.dragover {
+    border-color: var(--accent-orange);
+    background: rgba(255,107,61,0.08);
+    transform: translateY(-4px);
+  }
+
+  .inner-rect {
+    border: 1px dashed rgba(255,107,61,0.25);
+    border-radius: 14px;
+    padding: 36px;
+    background: white;
+    max-width: 90%;
+    margin: auto;
+    text-align:center;
+  }
+  .icon { font-size:40px; color: var(--accent-orange); margin-bottom:10px; }
+  .hint { font-weight:800; color:var(--muted); font-size:16px; }
+  .sub { font-size:13px; margin-top:6px; color:rgba(0,0,0,0.5); }
+
+  .actions { margin-top:18px; display:flex; gap:14px; justify-content:center; }
+  .btn-orange { background: var(--accent-orange); color:white; padding:12px 22px; border-radius:14px; border:none; font-weight:800; cursor:pointer; }
+  .btn-gray { background: white; border:1px solid rgba(0,0,0,0.1); padding:12px 22px; border-radius:14px; font-weight:700; cursor:pointer; }
+
+  /* hide fallback form input */
+  #hiddenFile { display:none; }
+</style>
+
+<div class="page-shell">
+  <div class="upload-card">
+
+    <h3 class="upload-title">Upload an image for prediction</h3>
+    <div class="upload-sub">Accepted: JPG, PNG — Max: your server limit</div>
+
+    <label id="dropzone" class="dropzone" tabindex="0" aria-label="Upload image dropzone">
+      <div class="inner-rect">
+        <div class="icon">⬆</div>
+        <div class="hint">Click or drag &amp; drop an image here</div>
+        <div class="sub">Recommended: close-up lesion photo (well-lit)</div>
+
+        <div class="actions">
+          <button id="uploadBtn" class="btn-orange" type="button">Upload &amp; Predict</button>
+          <button id="clearBtn" class="btn-gray" type="button">Cancel</button>
+        </div>
+      </div>
+
+      <input id="fileInput" name="image" type="file" accept="image/*" style="display:none;">
+    </label>
+
+    <!-- Hidden form that will be submitted to Flask /upload -->
+    <form id="uploadForm" method="POST" action="{{ url_for('upload') }}" enctype="multipart/form-data" style="display:none;">
+      <input id="hiddenFile" name="image" type="file" accept="image/*">
+      <button type="submit">Submit</button>
+    </form>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  const dropzone = document.getElementById('dropzone');
+  const input = document.getElementById('fileInput');
+  const hiddenFile = document.getElementById('hiddenFile');
+  const uploadForm = document.getElementById('uploadForm');
+  const uploadBtn = document.getElementById('uploadBtn');
+  const clearBtn = document.getElementById('clearBtn');
+
+  // click opens file dialog
+  dropzone.addEventListener('click', () => input.click());
+
+  // drag effects
+  ['dragenter','dragover'].forEach(ev => {
+    dropzone.addEventListener(ev, e => { e.preventDefault(); dropzone.classList.add('dragover'); });
+  });
+  ['dragleave','drop'].forEach(ev => {
+    dropzone.addEventListener(ev, e => { e.preventDefault(); dropzone.classList.remove('dragover'); });
+  });
+
+  dropzone.addEventListener('drop', function (e) {
+    const f = e.dataTransfer.files && e.dataTransfer.files[0];
+    if (!f) return;
+    handleFile(f);
+  });
+
+  input.addEventListener('change', () => {
+    const f = input.files[0];
+    if (!f) return;
+    handleFile(f);
+  });
+
+  function handleFile(file) {
+    if (!file.type.startsWith('image/')) { alert('Please upload an image file'); return; }
+    // assign file to hiddenFile for form submission via DataTransfer (best effort)
+    try {
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      hiddenFile.files = dt.files;
+    } catch (err) {
+      // ignore if not supported
+    }
+  }
+
+  // On click Upload & Predict -> submit the real Flask form
+  uploadBtn.addEventListener('click', function () {
+    const fileExists = (hiddenFile.files && hiddenFile.files.length) || (input.files && input.files.length);
+    if (!fileExists) {
+      input.click();
+      return;
+    }
+
+    // ensure hiddenFile has the file
+    try {
+      if ((!hiddenFile.files || !hiddenFile.files.length) && input.files && input.files.length) {
+        const dt = new DataTransfer();
+        dt.items.add(input.files[0]);
+        hiddenFile.files = dt.files;
+      }
+    } catch (err) {}
+
+    // submit to Flask /upload
+    uploadForm.submit();
+  });
+
+  clearBtn.addEventListener('click', function () {
+    input.value = '';
+    try { hiddenFile.value = ''; } catch(e) {}
+  });
+
+})();
+</script>
+
+{% endblock %}
